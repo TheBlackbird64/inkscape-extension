@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension
+    xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+    <name>Save to a distant server</name>
+    <id>save-on-a-server</id>
+    <effect>
+        <object-type>all</object-type>
+        <effects-menu>
+            <submenu name="Document"/>
+        </effects-menu>
+    </effect>
+    <script>
+        <command location="inx" interpreter="python">push.py</command>
+        <option name="action" type="string">push</option>
+    </script>
+</inkscape-extension>
