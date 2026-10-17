@@ -1,4 +1,6 @@
 import inkex
+import sys
+sys.path.insert(0, "libs")
 import requests
 
 url = "http://localhost:8000/upload"

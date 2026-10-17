@@ -1,0 +1,9 @@
+#!/bin/bash
+
+:: inx files
+mv inx-files\load.inx %APPDATA%\inkscape\extensions\
+mv inx-files\save.inx %APPDATA%\inkscape\extensions\
+
+:: python files
+mv push.py %APPDATA%\inkscape\extensions\
+mv pull.py %APPDATA%\inkscape\extensions\

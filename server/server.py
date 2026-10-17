@@ -34,5 +34,6 @@ def uploader_fichier(folder: str = Form(...), file: UploadFile = File(...)):
     return {"message": f"Fichier '{file.filename}' reçu et sauvegardé avec succès !"}
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="localhost", port=8000)
+    # import uvicorn
+    # uvicorn.run(app, host="localhost", port=8000)
+    pass
