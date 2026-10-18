@@ -15,3 +15,6 @@ copy inx-files\save.inx %ext%
 :: python files
 copy push.py %ext%
 copy pull.py %ext%
+
+:: start inkscape
+start inkscape

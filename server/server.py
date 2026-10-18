@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile, File, Form
+import uvicorn
 import shutil
 import os
 import sqlite3
@@ -8,8 +9,9 @@ DIR_UPLOADS = os.path.join(os.path.dirname(__file__), "uploads")
 
 app = FastAPI()
 
-# @app.get("/id")
-
+@app.get("/id")
+def get_id(id: str = None):
+    return {"id": "12345"}
 
 @app.get("/infos")
 def get_files():
@@ -22,9 +24,9 @@ def get_files():
     return files
 
 @app.post("/upload")
-def uploader_fichier(folder: str = Form(...), file: UploadFile = File(...)):
+def uploader_fichier(file: UploadFile = File(...)):
 
-    filepath = os.path.join(DIR_UPLOADS, folder, file.filename)
+    filepath = os.path.join(DIR_UPLOADS, file.filename)
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
     
     # Sauvegarde du fichier sur le serveur
@@ -34,6 +36,5 @@ def uploader_fichier(folder: str = Form(...), file: UploadFile = File(...)):
     return {"message": f"Fichier '{file.filename}' reçu et sauvegardé avec succès !"}
 
 if __name__ == "__main__":
-    # import uvicorn
-    # uvicorn.run(app, host="localhost", port=8000)
+    uvicorn.run(app, host="localhost", port=8000)
     pass
