@@ -8,23 +8,24 @@ url = "http://localhost:8000/"
 
 class Save(inkex.Effect):
 
-    NODE_ID = "id_document"
+    NODE_ID = "{http://www.w3.org/2000/svg}id_document"
 
     def effect(self):
         
         # 0: check if the document is saved
-        inkex.errormsg(Save.document_path())
-        if Save.document_path() is None:
+
+        if (self.options.input_file or "") == "":
             inkex.errormsg("Le document doit être sauvegardé avant de pouvoir être poussé sur le serveur")
             return
         
         # 1: get the id metadata
         
+        metadata_node = "{http://www.w3.org/2000/svg}metadata"
         root = self.document.getroot()
         
-        metadata = root.find("metadata")
+        metadata = root.find(metadata_node)
         if metadata is None:
-            metadata = etree.SubElement(root, "metadata")
+            metadata = etree.SubElement(root, metadata_node)
         node_document_id = metadata.find(Save.NODE_ID)
         if node_document_id is None:
             node_document_id = etree.SubElement(metadata, Save.NODE_ID)
@@ -32,16 +33,17 @@ class Save(inkex.Effect):
         # 2: ask to server an id if the node is empty
         
         if node_document_id.text == "":
-            res = requests.get(url + "id", params={"id": node_document_id.text})
+            res = requests.get(url + "id")
             if res.status_code != 200:
                 inkex.errormsg("Erreur lors de la récupération de l'id du document")
                 return
         
             node_document_id.text = res.json()["id"]
 
+        self.save(self.options.input_file)
         # 3: push with the id
         
-        with open(Save.document_path(), "rb") as f:
+        with open(self.options.input_file, "rb") as f:
             res = requests.post(url + "upload", files={"file": f})
         
         if res.status_code != 200:

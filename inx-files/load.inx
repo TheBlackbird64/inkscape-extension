@@ -6,7 +6,7 @@
     <effect>
         <object-type>all</object-type>
         <effects-menu>
-            <submenu name="Document"/>
+            <submenu name="Synchro"/>
         </effects-menu>
     </effect>
     <script>
