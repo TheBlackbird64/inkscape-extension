@@ -13,6 +13,7 @@ class Save(inkex.Effect):
     def effect(self):
         
         # 0: check if the document is saved
+        inkex.errormsg(Save.document_path())
         if Save.document_path() is None:
             inkex.errormsg("Le document doit être sauvegardé avant de pouvoir être poussé sur le serveur")
             return
