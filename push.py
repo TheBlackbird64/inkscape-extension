@@ -32,19 +32,20 @@ class Save(inkex.Effect):
 
         # 2: ask to server an id if the node is empty
         
-        if node_document_id.text == "":
+        if node_document_id.text == "" or node_document_id.text is None:
             res = requests.get(url + "id")
             if res.status_code != 200:
                 inkex.errormsg("Erreur lors de la récupération de l'id du document")
                 return
-        
+
             node_document_id.text = res.json()["id"]
 
-        self.save(self.options.input_file)
+        self.document.write(self.options.input_file, encoding="utf-8", xml_declaration=True)
+
         # 3: push with the id
         
         with open(self.options.input_file, "rb") as f:
-            res = requests.post(url + "upload", files={"file": f})
+            res = requests.post(url + "upload", files={"file": (self.options.input_file, f, "image/svg+xml")})
         
         if res.status_code != 200:
             inkex.errormsg("Erreur lors de l'envoi du fichier sur le serveur")
