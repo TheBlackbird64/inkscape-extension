@@ -1,3 +1,5 @@
+import os
+
 from lxml import etree
 import inkex
 import sys
@@ -33,7 +35,7 @@ class Save(inkex.Effect):
         # 2: ask to server an id if the node is empty
         
         if node_document_id.text == "" or node_document_id.text is None:
-            res = requests.get(url + "id")
+            res = requests.get(url + "id", params={"filename": self.svg.name})
             if res.status_code != 200:
                 inkex.errormsg("Erreur lors de la récupération de l'id du document")
                 return

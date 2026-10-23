@@ -3,3 +3,4 @@
 *.lnk
 extension-folder
 uploads
+__pycache__

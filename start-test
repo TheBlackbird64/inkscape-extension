@@ -24,6 +24,17 @@ cp -f "$SCRIPT_DIR/pull.py" "$EXT_DIR/"
 
 echo "Fichiers copiés dans : $EXT_DIR"
 
+SERVER_DIR="$SCRIPT_DIR/server"
+PYTHON="$SERVER_DIR/.venv/bin/python"
+if [ ! -x "$PYTHON" ]; then
+    echo "Le venv du serveur est introuvable : $PYTHON"
+    exit 1
+fi
+
+pkill -f "$SERVER_DIR/server.py" 2>/dev/null || true
+nohup "$PYTHON" "$SERVER_DIR/server.py" > "$SERVER_DIR/server.log" 2>&1 &
+echo "Serveur FastAPI relancé avec le venv."
+
 if command -v inkscape >/dev/null 2>&1; then
     echo "Lancement d'Inkscape..."
     inkscape

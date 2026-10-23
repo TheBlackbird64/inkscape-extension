@@ -1,3 +1,5 @@
+
+rmdir /S /Q .venv
 python -m venv .venv
-start .venv/Scripts/activate
+.venv/Scripts/activate.bat
 pip install -r requirements.txt

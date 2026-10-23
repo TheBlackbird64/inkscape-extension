@@ -16,5 +16,17 @@ copy inx-files\save.inx %ext%
 copy push.py %ext%
 copy pull.py %ext%
 
+:: restart the FastAPI server with its virtual environment
+pushd "%~dp0server"
+if not exist ".venv\Scripts\python.exe" (
+    echo Le venv du serveur est introuvable.
+    popd
+    exit /b 1
+)
+
+for /f "tokens=5" %%P in ('netstat -ano ^| findstr ":8000" ^| findstr "LISTENING"') do taskkill /PID %%P /F >nul 2>&1
+start "FastAPI server" /b ".venv\Scripts\python.exe" server.py
+popd
+
 :: start inkscape
 start inkscape
