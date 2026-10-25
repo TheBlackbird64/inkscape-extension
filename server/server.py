@@ -6,13 +6,20 @@ import shutil
 import os
 import secrets
 
+import configparser
+
+config = configparser.ConfigParser()
+config.read("config.ini")
+
+API_KEY = config["server"]["api_key"]
+headers = {"X-API-Key": API_KEY}
+
 # constants
 PORT = 8000
 DIR_UPLOADS = os.path.join(os.path.dirname(__file__), "uploads")
 
 app = FastAPI()
 
-API_KEY = os.environ["API_KEY"]
 api_key_header = APIKeyHeader(name="X-API-Key")
 
 def verify_api_key(key: str = Depends(api_key_header)):

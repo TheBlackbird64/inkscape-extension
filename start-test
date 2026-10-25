@@ -21,6 +21,7 @@ cp -f "$SCRIPT_DIR/inx-files/load.inx" "$EXT_DIR/"
 cp -f "$SCRIPT_DIR/inx-files/save.inx" "$EXT_DIR/"
 cp -f "$SCRIPT_DIR/push.py" "$EXT_DIR/"
 cp -f "$SCRIPT_DIR/pull.py" "$EXT_DIR/"
+cp -f "$SCRIPT_DIR/config.ini" "$EXT_DIR/"
 
 echo "Fichiers copiés dans : $EXT_DIR"
 

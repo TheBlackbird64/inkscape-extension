@@ -16,6 +16,9 @@ copy inx-files\save.inx %ext%
 copy push.py %ext%
 copy pull.py %ext%
 
+:: config file
+copy config.ini %ext%
+
 :: restart the FastAPI server with its virtual environment
 pushd "%~dp0server"
 if not exist ".venv\Scripts\python.exe" (

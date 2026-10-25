@@ -6,7 +6,17 @@ This extension synchronizes svg documents between local and remote locations usi
 
 ## Usage
 
-Execute : 
+Run the server on the machine you want to be hosting the server : 
+
+On the server:
+
+```bash
+create_environment
+``` 
+
+Copy the generated config.ini file and paste it next to the extension files
+
+On the client, execute : 
 
 for windows:
 ```batch
@@ -17,10 +27,6 @@ for linux:
 start-test
 ``` 
 to copy files to the inkscape extension directory.
-
-Now you have to run the server on the machine you want to be hosting the server.
-
-Then you can test it in the software.
 
 ## Logic
 

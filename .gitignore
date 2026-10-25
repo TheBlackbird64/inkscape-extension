@@ -4,3 +4,4 @@
 extension-folder
 uploads
 __pycache__
+config.ini

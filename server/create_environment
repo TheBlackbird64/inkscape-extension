@@ -4,3 +4,13 @@ rm -rf .venv
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+
+{
+    echo "[server]"
+    echo "url = http://localhost:8000/"
+    echo "api_key = $(openssl rand -hex 32)"
+} > config.ini
+
+chmod 600 config.ini
+
+echo "API_KEY generated (copy the config.ini file and paste it next to the extensions files)"

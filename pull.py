@@ -5,8 +5,14 @@ import os
 sys.path.insert(0, "libs")
 import requests
 from lxml import etree
+import configparser
 
-url = "http://localhost:8000/"
+config = configparser.ConfigParser()
+config.read("config.ini")
+
+API_KEY = config["server"]["api_key"]
+URL = config["server"]["url"]
+headers = {"X-API-Key": API_KEY}
 
 class Pull(inkex.Effect):
 
@@ -28,7 +34,7 @@ class Pull(inkex.Effect):
                     # 2: ask the server the file with this id
 
                     try:
-                        res = requests.get(f"{url}download", params={"id": id})
+                        res = requests.get(f"{URL}download", params={"id": id}, headers=headers)
                     except requests.RequestException as e:
                         inkex.errormsg(f"Erreur lors de la récupération du fichier depuis le serveur: {e}")
                         return
