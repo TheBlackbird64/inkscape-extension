@@ -14,12 +14,6 @@ class Save(inkex.Effect):
 
     def effect(self):
         
-        # 0: check if the document is saved
-
-        if (self.options.input_file or "") == "":
-            inkex.errormsg("Le document doit être sauvegardé avant de pouvoir être poussé sur le serveur")
-            return
-        
         # 1: get the id metadata
         
         metadata_node = "{http://www.w3.org/2000/svg}metadata"
@@ -35,7 +29,12 @@ class Save(inkex.Effect):
         # 2: ask to server an id if the node is empty
         
         if node_document_id.text == "" or node_document_id.text is None:
-            res = requests.get(url + "id", params={"filename": self.svg.name})
+            try:
+                res = requests.get(url + "id", params={"filename": self.svg.name})
+            except requests.RequestException as e:
+                inkex.errormsg(f"Erreur lors de la récupération de l'id du document: {e}")
+                return
+
             if res.status_code != 200:
                 inkex.errormsg("Erreur lors de la récupération de l'id du document")
                 return
@@ -47,7 +46,7 @@ class Save(inkex.Effect):
         # 3: push with the id
         
         with open(self.options.input_file, "rb") as f:
-            res = requests.post(url + "upload", files={"file": (self.options.input_file, f, "image/svg+xml")})
+            res = requests.post(url + "upload", files={"file": (self.options.input_file, f, "image/svg+xml")}, data={"name": node_document_id.text})
         
         if res.status_code != 200:
             inkex.errormsg("Erreur lors de l'envoi du fichier sur le serveur")
