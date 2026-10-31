@@ -11,10 +11,13 @@ pip install requests --target %ext%\libs
 :: inx files
 copy inx-files\load.inx %ext%
 copy inx-files\save.inx %ext%
+copy inx-files\manage.inx %ext%
 
 :: python files
 copy push.py %ext%
 copy pull.py %ext%
+copy manage.py %ext%
+copy file_browser.py %ext%
 
 :: config file
 copy config.ini %ext%

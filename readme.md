@@ -8,8 +8,13 @@ This extension synchronizes svg documents between local and remote locations usi
 
 Run the server on the machine you want to be hosting the server : 
 
-On the server:
+On the server, in the `server` folder:
 
+for windows:
+```batch
+create_environment.bat
+``` 
+for linux:
 ```bash
 create_environment
 ``` 
@@ -46,6 +51,12 @@ to copy files to the inkscape extension directory.
 	- Open a dialog to choose which remote document to sync with.
 	- Add the chosen `id` to the local document and synchronize.
 
+### Manage
+- Open the same dialog (tkinter window) even if the document already has an `id`.
+- `Ouvrir`: replace the local document with the selected remote document and link to it (`id`).
+- `Supprimer`: delete the selected remote document. If it was the linked one, the local document is unlinked (the next push creates a new `id`).
 
-Use the provided `push.py` and `pull.py` scripts to run the push and pull actions.
+
+Use the provided `push.py`, `pull.py` and `manage.py` scripts (menu Extensions > Synchro) to run the push, pull and manage actions.
+On linux, the dialog needs tkinter for the python used by inkscape (`python3-tk` package).
 
