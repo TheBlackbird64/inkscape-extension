@@ -1,4 +1,3 @@
-import io
 import sys
 import inkex
 import os
@@ -6,6 +5,7 @@ sys.path.insert(0, "libs")
 import requests
 from lxml import etree
 import configparser
+import xml.parsers.expat
 
 from file_browser import FileBrowser
 
@@ -15,6 +15,35 @@ config.read("config.ini")
 API_KEY = config["server"]["api_key"]
 URL = config["server"]["url"]
 headers = {"X-API-Key": API_KEY}
+TIMEOUT = 30 # seconds, Inkscape is blocked while waiting the server
+
+# the svg comes from the network: no entity resolution (it can read local files), nor network access
+SVG_PARSER = etree.XMLParser(huge_tree=True, strip_cdata=False, resolve_entities=False, no_network=True)
+
+
+class StopParsing(Exception):
+    pass
+
+def declares_entities(data):
+    """True if the xml declares entities: they can read local files, or fill the memory while parsing (even not resolved)"""
+    found = []
+
+    def entity(*args):
+        found.append(True)
+        raise StopParsing
+
+    def root(*args):
+        raise StopParsing # all the declarations are before the root element
+
+    parser = xml.parsers.expat.ParserCreate()
+    parser.EntityDeclHandler = entity
+    parser.StartElementHandler = root
+    try:
+        parser.Parse(data, True)
+    except StopParsing:
+        pass
+    return bool(found)
+
 
 class Pull(inkex.Effect):
 
@@ -44,7 +73,7 @@ class Pull(inkex.Effect):
         """Replace the document with the server file with this id"""
 
         try:
-            res = requests.get(f"{URL}download", params={"id": id}, headers=headers)
+            res = requests.get(f"{URL}download", params={"id": id}, headers=headers, timeout=TIMEOUT)
         except requests.RequestException as e:
             inkex.errormsg(f"Erreur lors de la récupération du fichier depuis le serveur: {e}")
             return
@@ -56,8 +85,14 @@ class Pull(inkex.Effect):
             inkex.errormsg("Erreur lors de la récupération du fichier depuis le serveur")
             return
 
-        new_document = inkex.load_svg(io.BytesIO(res.content))
-        new_svg = new_document.getroot()
+        try:
+            if declares_entities(res.content):
+                inkex.errormsg(f"Le fichier '{id}' a été refusé : il déclare des entités XML, qui peuvent lire des fichiers de cet ordinateur")
+                return
+            new_svg = etree.fromstring(res.content, parser=SVG_PARSER)
+        except (xml.parsers.expat.ExpatError, ValueError, etree.XMLSyntaxError) as e:
+            inkex.errormsg(f"Le fichier '{id}' n'est pas un SVG valide : {e}")
+            return
 
         # Remplacer les attributs de la racine
         self.svg.attrib.clear()

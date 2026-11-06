@@ -13,6 +13,7 @@ config.read("config.ini")
 API_KEY = config["server"]["api_key"]
 URL = config["server"]["url"]
 headers = {"X-API-Key": API_KEY}
+TIMEOUT = 30 # seconds, Inkscape is blocked while waiting the server
 
 class Save(inkex.Effect):
 
@@ -36,7 +37,7 @@ class Save(inkex.Effect):
         
         if node_document_id.text == "" or node_document_id.text is None:
             try:
-                res = requests.get(URL + "id", params={"filename": self.svg.name}, headers=headers)
+                res = requests.get(URL + "id", params={"filename": self.svg.name}, headers=headers, timeout=TIMEOUT)
             except requests.RequestException as e:
                 inkex.errormsg(f"Erreur lors de la récupération de l'id du document: {e}")
                 return
@@ -52,11 +53,19 @@ class Save(inkex.Effect):
         # 3: push with the id
         
         with open(self.options.input_file, "rb") as f:
-            res = requests.post(URL + "upload", 
-                                files={"file": (self.options.input_file, f, "image/svg+xml")}, 
-                                data={"name": node_document_id.text}, 
-                                headers=headers)
-        
+            try:
+                res = requests.post(URL + "upload",
+                                    files={"file": (self.options.input_file, f, "image/svg+xml")},
+                                    data={"name": node_document_id.text},
+                                    headers=headers,
+                                    timeout=TIMEOUT)
+            except requests.RequestException as e:
+                inkex.errormsg(f"Erreur lors de l'envoi du fichier sur le serveur: {e}")
+                return
+
+        if res.status_code == 413:
+            inkex.errormsg("Le fichier est trop gros pour le serveur")
+            return
         if res.status_code != 200:
             inkex.errormsg("Erreur lors de l'envoi du fichier sur le serveur")
             return
