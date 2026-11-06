@@ -14,7 +14,7 @@ if "%API_KEY%"=="" goto :error
 
 (
     echo [server]
-    echo url = http://localhost:8000/
+    echo url = https://localhost:8000/
     echo api_key = %API_KEY%
 ) > config.ini
 

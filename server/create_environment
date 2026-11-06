@@ -7,7 +7,7 @@ pip install -r requirements.txt
 
 {
     echo "[server]"
-    echo "url = http://localhost:8000/"
+    echo "url = https://localhost:8000/"
     echo "api_key = $(openssl rand -hex 32)"
 } > config.ini
 
